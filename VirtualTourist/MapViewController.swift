@@ -36,13 +36,31 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         let touchPoint: CGPoint = sender.locationInView(mapView)
         let coordinate: CLLocationCoordinate2D = mapView.convertPoint(touchPoint, toCoordinateFromView: mapView)
         let newPin = Pin(coordinate: coordinate)
-        print(newPin)
+        mapView.addAnnotation(newPin)
     }
     
     //--------------------------------------
     // MARK: - MKMapView Delegate
     //--------------------------------------
     
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        if let annotation = annotation as? Pin {
+            let identifier = "pin"
+            var view: MKPinAnnotationView
+            if let dequedView = mapView.dequeueReusableAnnotationViewWithIdentifier(identifier) as? MKPinAnnotationView {
+                dequedView.annotation = annotation
+                view = dequedView
+            } else {
+                view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                view.animatesDrop = true
+            }
+            return view
+        }
+        return nil
+    }
     
+    func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+        print("Annotation view selected")
+    }
 }
 
