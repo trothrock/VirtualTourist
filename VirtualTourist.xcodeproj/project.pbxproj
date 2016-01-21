@@ -15,6 +15,7 @@
 		FED7CF161C509DC200512D73 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FED7CF141C509DC200512D73 /* LaunchScreen.storyboard */; };
 		FED7CF211C509DC200512D73 /* VirtualTouristTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED7CF201C509DC200512D73 /* VirtualTouristTests.swift */; };
 		FED7CF2C1C509DC300512D73 /* VirtualTouristUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED7CF2B1C509DC300512D73 /* VirtualTouristUITests.swift */; };
+		FED7CF3E1C50AE5400512D73 /* Pin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED7CF3D1C50AE5400512D73 /* Pin.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		FED7CF271C509DC300512D73 /* VirtualTouristUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VirtualTouristUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FED7CF2B1C509DC300512D73 /* VirtualTouristUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualTouristUITests.swift; sourceTree = "<group>"; };
 		FED7CF2D1C509DC300512D73 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FED7CF3D1C50AE5400512D73 /* Pin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pin.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,13 +101,12 @@
 		FED7CF071C509DC100512D73 /* VirtualTourist */ = {
 			isa = PBXGroup;
 			children = (
-				FED7CF081C509DC100512D73 /* AppDelegate.swift */,
-				FED7CF0A1C509DC100512D73 /* MapViewController.swift */,
+				FED7CF3F1C50AF5300512D73 /* Model */,
+				FED7CF401C50AF5D00512D73 /* Controller */,
 				FED7CF0C1C509DC100512D73 /* Main.storyboard */,
 				FED7CF121C509DC200512D73 /* Assets.xcassets */,
 				FED7CF141C509DC200512D73 /* LaunchScreen.storyboard */,
-				FED7CF171C509DC200512D73 /* Info.plist */,
-				FED7CF0F1C509DC200512D73 /* VirtualTourist.xcdatamodeld */,
+				FED7CF411C50AF9B00512D73 /* Supporting Files */,
 			);
 			path = VirtualTourist;
 			sourceTree = "<group>";
@@ -126,6 +127,32 @@
 				FED7CF2D1C509DC300512D73 /* Info.plist */,
 			);
 			path = VirtualTouristUITests;
+			sourceTree = "<group>";
+		};
+		FED7CF3F1C50AF5300512D73 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				FED7CF0F1C509DC200512D73 /* VirtualTourist.xcdatamodeld */,
+				FED7CF3D1C50AE5400512D73 /* Pin.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		FED7CF401C50AF5D00512D73 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				FED7CF081C509DC100512D73 /* AppDelegate.swift */,
+				FED7CF0A1C509DC100512D73 /* MapViewController.swift */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		FED7CF411C50AF9B00512D73 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				FED7CF171C509DC200512D73 /* Info.plist */,
+			);
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -262,6 +289,7 @@
 				FED7CF0B1C509DC100512D73 /* MapViewController.swift in Sources */,
 				FED7CF091C509DC100512D73 /* AppDelegate.swift in Sources */,
 				FED7CF111C509DC200512D73 /* VirtualTourist.xcdatamodeld in Sources */,
+				FED7CF3E1C50AE5400512D73 /* Pin.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
