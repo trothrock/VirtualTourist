@@ -9,13 +9,17 @@
 import UIKit
 import MapKit
 
-class MapViewController: UIViewController, MKMapViewDelegate {
+class MapViewController: UIViewController, MKMapViewDelegate, UIScrollViewDelegate {
     
     //--------------------------------------
     // MARK: - Properties
     //--------------------------------------
     
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var editButton: UIBarButtonItem!
+    
+    var editingPins: Bool = false
     
     //--------------------------------------
     // MARK: - Lifecycle
@@ -25,6 +29,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         super.viewDidLoad()
         
         mapView.delegate = self
+        scrollView.delegate = self
+        self.automaticallyAdjustsScrollViewInsets = false
     }
     
     //--------------------------------------
@@ -37,6 +43,24 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         let coordinate: CLLocationCoordinate2D = mapView.convertPoint(touchPoint, toCoordinateFromView: mapView)
         let newPin = Pin(coordinate: coordinate)
         mapView.addAnnotation(newPin)
+    }
+    
+    @IBAction func editButtonPressed() {
+        if editingPins {
+            editingPins = false
+            editButton.title = "Edit"
+            let attrs = [NSFontAttributeName: UIFont.systemFontOfSize(17)]
+            editButton.setTitleTextAttributes(attrs, forState: UIControlState.Normal)
+            let scrollPoint = CGPoint(x: 0.0, y: 0.0)
+            scrollView.setContentOffset(scrollPoint, animated: true)
+        } else {
+            editingPins = true
+            editButton.title = "Done"
+            let attrs = [NSFontAttributeName: UIFont.boldSystemFontOfSize(17)]
+            editButton.setTitleTextAttributes(attrs, forState: UIControlState.Normal)
+            let scrollPoint = CGPoint(x: 0.0, y: 60.0)
+            scrollView.setContentOffset(scrollPoint, animated: true)
+        }
     }
     
     //--------------------------------------
@@ -60,7 +84,13 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
-        print("Annotation view selected")
+        if editingPins {
+            // TODO: Delete pin.
+            print("Delete pin")
+        } else {
+            // TODO: Segue to next view controller.
+            print("Segue to next view controller")
+        }
     }
 }
 
