@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
         <!--Virtual Tourist-->
@@ -70,6 +71,7 @@
                         <outlet property="editButton" destination="sIX-3K-PkN" id="imC-NY-7hU"/>
                         <outlet property="mapView" destination="in0-kT-wFP" id="fN3-fV-yac"/>
                         <outlet property="scrollView" destination="4q0-LU-7wV" id="Hww-dd-cPd"/>
+                        <segue destination="Aqd-av-z2Z" kind="show" identifier="showPinDetail" id="lel-oa-uYH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -80,6 +82,38 @@
                 </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1057" y="337"/>
+        </scene>
+        <!--Pin Detail View Controller-->
+        <scene sceneID="ft4-26-iJT">
+            <objects>
+                <viewController id="Aqd-av-z2Z" customClass="PinDetailViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="IR3-7p-0jv"/>
+                        <viewControllerLayoutGuide type="bottom" id="s6h-3M-hNH"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="VB1-Ey-8hx">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="89l-2d-Q6k">
+                                <rect key="frame" x="0.0" y="64" width="600" height="150"/>
+                            </mapView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="89l-2d-Q6k" firstAttribute="height" secondItem="VB1-Ey-8hx" secondAttribute="height" multiplier="0.25" id="HZp-8O-J25"/>
+                            <constraint firstItem="89l-2d-Q6k" firstAttribute="leading" secondItem="VB1-Ey-8hx" secondAttribute="leading" id="RFe-1X-F5r"/>
+                            <constraint firstItem="89l-2d-Q6k" firstAttribute="top" secondItem="IR3-7p-0jv" secondAttribute="bottom" id="S8a-1k-2Xa"/>
+                            <constraint firstAttribute="trailing" secondItem="89l-2d-Q6k" secondAttribute="trailing" id="cCL-dz-O29"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="mapView" destination="89l-2d-Q6k" id="wOz-Kh-xez"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7z8-7Q-zWZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1833" y="335"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="ieq-D4-vKt">

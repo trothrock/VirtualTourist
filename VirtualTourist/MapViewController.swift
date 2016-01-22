@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 class MapViewController: UIViewController, MKMapViewDelegate, UIScrollViewDelegate {
     
@@ -20,6 +21,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIScrollViewDelega
     @IBOutlet weak var editButton: UIBarButtonItem!
     
     var editingPins: Bool = false
+    var selectedPin: Pin? = nil
+    var pins = [Pin]()
+    var sharedContext: NSManagedObjectContext {
+        return CoreDataStackManager.sharedInstance().managedObjectContext
+    }
     
     //--------------------------------------
     // MARK: - Lifecycle
@@ -31,6 +37,29 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIScrollViewDelega
         mapView.delegate = self
         scrollView.delegate = self
         self.automaticallyAdjustsScrollViewInsets = false
+        
+        addSavedPinsToMap()
+    }
+    
+    //--------------------------------------
+    // MARK: - Add saved pins
+    //--------------------------------------
+    
+    func addSavedPinsToMap() {
+        pins = fetchAllPins()
+        for pin in pins {
+            mapView.addAnnotation(pin)
+        }
+    }
+    
+    func fetchAllPins() -> [Pin] {
+        let fetchRequest = NSFetchRequest(entityName: "Pin")
+        do {
+            return try sharedContext.executeFetchRequest(fetchRequest) as! [Pin]
+        } catch {
+            print(error)
+            return [Pin]()
+        }
     }
     
     //--------------------------------------
@@ -41,8 +70,9 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIScrollViewDelega
         guard sender.state == UIGestureRecognizerState.Began else {return}
         let touchPoint: CGPoint = sender.locationInView(mapView)
         let coordinate: CLLocationCoordinate2D = mapView.convertPoint(touchPoint, toCoordinateFromView: mapView)
-        let newPin = Pin(coordinate: coordinate)
+        let newPin = Pin(lat: coordinate.latitude, long: coordinate.longitude, context: sharedContext)
         mapView.addAnnotation(newPin)
+        CoreDataStackManager.sharedInstance().saveContext()
     }
     
     @IBAction func editButtonPressed() {
@@ -64,7 +94,16 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIScrollViewDelega
     }
     
     //--------------------------------------
-    // MARK: - MKMapView Delegate
+    // MARK: - Navigation
+    //--------------------------------------
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        let detailViewController = segue.destinationViewController as! PinDetailViewController
+        detailViewController.selectedPin = selectedPin
+    }
+    
+    //--------------------------------------
+    // MARK: - MKMapView delegate
     //--------------------------------------
     
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
@@ -88,8 +127,10 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIScrollViewDelega
             // TODO: Delete pin.
             print("Delete pin")
         } else {
-            // TODO: Segue to next view controller.
-            print("Segue to next view controller")
+            if let view = view.annotation as? Pin {
+                selectedPin = view
+                self.performSegueWithIdentifier("showPinDetail", sender: nil)
+            }
         }
     }
 }
