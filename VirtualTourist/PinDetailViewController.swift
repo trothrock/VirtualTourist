@@ -28,6 +28,7 @@ class PinDetailViewController: UIViewController {
         
         setMapPin()
         setMapProperties()
+        FlickrClient.sharedInstance().getImagesFromFlickrForPin(selectedPin!)
     }
     
     //--------------------------------------
