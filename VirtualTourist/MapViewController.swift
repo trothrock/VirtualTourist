@@ -42,7 +42,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIScrollViewDelega
     }
     
     //--------------------------------------
-    // MARK: - Add saved pins
+    // MARK: - Add Saved Pins
     //--------------------------------------
     
     func addSavedPinsToMap() {
@@ -99,7 +99,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIScrollViewDelega
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         let detailViewController = segue.destinationViewController as! PinDetailViewController
-        detailViewController.selectedPin = selectedPin
+        detailViewController.pin = selectedPin
     }
     
     //--------------------------------------

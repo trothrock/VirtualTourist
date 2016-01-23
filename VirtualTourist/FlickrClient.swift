@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreData
 
 class FlickrClient: NSObject {
 
@@ -17,6 +18,7 @@ class FlickrClient: NSObject {
     let BASE_URL = "https://api.flickr.com/services/rest/"
     let METHOD_NAME = "flickr.photos.search"
     let API_KEY = "a655dfdf2cd37f0f64d5d0f22368062f"
+    let PER_PAGE = "20"
     let EXTRAS = "url_m"
     let SAFE_SEARCH = "1"
     let DATA_FORMAT = "json"
@@ -28,6 +30,10 @@ class FlickrClient: NSObject {
     let LON_MIN = -180.0
     let LON_MAX = 180.0
     
+    var sharedContext: NSManagedObjectContext {
+        return CoreDataStackManager.sharedInstance().managedObjectContext
+    }
+    
     //--------------------------------------
     // MARK: - Flickr API
     //--------------------------------------
@@ -36,6 +42,9 @@ class FlickrClient: NSObject {
         let methodArguments = [
             "method": METHOD_NAME,
             "api_key": API_KEY,
+            "per_page": PER_PAGE,
+            // TODO: "page" should be a property of Pin object. Incremented each time the user requests a new batch of pictures. Reset to 1 once greater than total page count.
+            "page": "1",
             "bbox": createBoundingBoxStringForPin(pin),
             "safe_search": SAFE_SEARCH,
             "extras": EXTRAS,
@@ -57,9 +66,9 @@ class FlickrClient: NSObject {
             
             guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
                 if let response = response as? NSHTTPURLResponse {
-                    print("Request returned an invalid response. Status code: \(response.statusCode)!")
+                    print("Request returned an invalid response. Status code: \(response.statusCode).")
                 } else if let response = response {
-                    print("Request returned an invalid response. Response: \(response)!")
+                    print("Request returned an invalid response. Response: \(response).")
                 } else {
                     print("Request returned an invalid response.")
                 }
@@ -67,7 +76,7 @@ class FlickrClient: NSObject {
             }
             
             guard let data = data else {
-                print("No data was returned by the request!")
+                print("No data was returned by the request.")
                 return
             }
             
@@ -79,7 +88,34 @@ class FlickrClient: NSObject {
                 print("Unable to parse data as JSON: \(data)")
             }
             
-            // TODO: Handle parsed result.
+            guard let stat = parsedResult["stat"] as? String where stat == "ok" else {
+                print("Flickr API returned an error. See error code and message in \(parsedResult)")
+                return
+            }
+            
+            guard let photosDictionary = parsedResult["photos"] as? NSDictionary else {
+                print("Cannot find key 'photos' in \(parsedResult)")
+                return
+            }
+            
+            guard let totalPhotosVal = (photosDictionary["total"] as? NSString)?.integerValue else {
+                print("Cannot find key 'total' in \(photosDictionary)")
+                return
+            }
+            
+            if totalPhotosVal > 0 {
+                if let photosArray = photosDictionary["photo"] as? [[String: AnyObject]] {
+                    for photo in photosArray {
+                        guard let urlString = photo["url_m"] as? String else {return}
+                        let photoToAdd = Photo(urlString: urlString, context: self.sharedContext)
+                        photoToAdd.pin = pin
+                    }
+                    CoreDataStackManager.sharedInstance().saveContext()
+                }
+            } else {
+                // TODO: Notify user that no photos are available for this pin.
+                print("No photos available for this location.")
+            }
         }
         
         task.resume()

@@ -1,27 +1,22 @@
 //
-//  Pin.swift
+//  Photo.swift
 //  VirtualTourist
 //
-//  Created by Ted Rothrock on 1/20/16.
+//  Created by Ted Rothrock on 1/22/16.
 //  Copyright © 2016 Ted Rothrock. All rights reserved.
 //
 
 import Foundation
-import MapKit
 import CoreData
 
-class Pin: NSManagedObject, MKAnnotation {
+class Photo: NSManagedObject {
     
     //--------------------------------------
     // MARK: - Properties
     //--------------------------------------
     
-    @NSManaged var lat: Double
-    @NSManaged var long: Double
-    @NSManaged var photos: [Photo]
-    var coordinate: CLLocationCoordinate2D {
-        return CLLocationCoordinate2D(latitude: lat, longitude: long)
-    }
+    @NSManaged var urlString: String
+    @NSManaged var pin: Pin?
     
     //--------------------------------------
     // MARK: - Init Methods
@@ -31,10 +26,9 @@ class Pin: NSManagedObject, MKAnnotation {
         super.init(entity: entity, insertIntoManagedObjectContext: context)
     }
     
-    init(lat: Double, long: Double, context: NSManagedObjectContext) {
-        let entity = NSEntityDescription.entityForName("Pin", inManagedObjectContext: context)!
+    init(urlString: String, context: NSManagedObjectContext) {
+        let entity = NSEntityDescription.entityForName("Photo", inManagedObjectContext: context)!
         super.init(entity: entity, insertIntoManagedObjectContext: context)
-        self.lat = lat
-        self.long = long
+        self.urlString = urlString
     }
 }

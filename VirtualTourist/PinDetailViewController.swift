@@ -17,7 +17,7 @@ class PinDetailViewController: UIViewController {
     
     @IBOutlet weak var mapView: MKMapView!
     
-    var selectedPin: Pin? = nil
+    var pin: Pin? = nil
     
     //--------------------------------------
     // MARK: - Lifecycle
@@ -28,7 +28,9 @@ class PinDetailViewController: UIViewController {
         
         setMapPin()
         setMapProperties()
-        FlickrClient.sharedInstance().getImagesFromFlickrForPin(selectedPin!)
+        if pin?.photos.count == 0 {
+            FlickrClient.sharedInstance().getImagesFromFlickrForPin(pin!)
+        }
     }
     
     //--------------------------------------
@@ -36,7 +38,7 @@ class PinDetailViewController: UIViewController {
     //--------------------------------------
     
     func setMapPin() {
-        guard let pin = selectedPin else {return}
+        guard let pin = self.pin else {return}
         let region = MKCoordinateRegionMake(pin.coordinate, MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5))
         mapView.region = region
         mapView.addAnnotation(pin)

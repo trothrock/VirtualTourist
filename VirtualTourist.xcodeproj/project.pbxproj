@@ -10,6 +10,7 @@
 		FE4349291C51E63A00C5F67D /* CoreDataStackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE4349281C51E63A00C5F67D /* CoreDataStackManager.swift */; };
 		FE43492C1C51E8FA00C5F67D /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FE43492A1C51E8FA00C5F67D /* Model.xcdatamodeld */; };
 		FE43492E1C52DAF000C5F67D /* FlickrClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE43492D1C52DAF000C5F67D /* FlickrClient.swift */; };
+		FE4349321C52FC9300C5F67D /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE4349311C52FC9300C5F67D /* Photo.swift */; };
 		FED7CF091C509DC100512D73 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED7CF081C509DC100512D73 /* AppDelegate.swift */; };
 		FED7CF0B1C509DC100512D73 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED7CF0A1C509DC100512D73 /* MapViewController.swift */; };
 		FED7CF0E1C509DC100512D73 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FED7CF0C1C509DC100512D73 /* Main.storyboard */; };
@@ -42,6 +43,7 @@
 		FE4349281C51E63A00C5F67D /* CoreDataStackManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStackManager.swift; sourceTree = "<group>"; };
 		FE43492B1C51E8FA00C5F67D /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		FE43492D1C52DAF000C5F67D /* FlickrClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrClient.swift; sourceTree = "<group>"; };
+		FE4349311C52FC9300C5F67D /* Photo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 		FED7CF051C509DC100512D73 /* VirtualTourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirtualTourist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FED7CF081C509DC100512D73 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FED7CF0A1C509DC100512D73 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
@@ -140,6 +142,7 @@
 			children = (
 				FE4349281C51E63A00C5F67D /* CoreDataStackManager.swift */,
 				FED7CF3D1C50AE5400512D73 /* Pin.swift */,
+				FE4349311C52FC9300C5F67D /* Photo.swift */,
 				FE43492D1C52DAF000C5F67D /* FlickrClient.swift */,
 				FE43492A1C51E8FA00C5F67D /* Model.xcdatamodeld */,
 			);
@@ -295,6 +298,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FE4349321C52FC9300C5F67D /* Photo.swift in Sources */,
 				FED7CF0B1C509DC100512D73 /* MapViewController.swift in Sources */,
 				FED7CF091C509DC100512D73 /* AppDelegate.swift in Sources */,
 				FE43492E1C52DAF000C5F67D /* FlickrClient.swift in Sources */,
