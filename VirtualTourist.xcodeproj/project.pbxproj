@@ -140,11 +140,11 @@
 		FED7CF3F1C50AF5300512D73 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				FE4349281C51E63A00C5F67D /* CoreDataStackManager.swift */,
 				FED7CF3D1C50AE5400512D73 /* Pin.swift */,
 				FE4349311C52FC9300C5F67D /* Photo.swift */,
 				FE43492D1C52DAF000C5F67D /* FlickrClient.swift */,
 				FE43492A1C51E8FA00C5F67D /* Model.xcdatamodeld */,
+				FE4349281C51E63A00C5F67D /* CoreDataStackManager.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";

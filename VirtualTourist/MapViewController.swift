@@ -123,9 +123,18 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIScrollViewDelega
     }
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+        
+        // Delete pin if user is in editing mode. Otherwise, proceed to PinDetailViewController, passing the selected pin.
+    
         if editingPins {
-            // TODO: Delete pin.
-            print("Delete pin")
+            if let view = view.annotation as? Pin {
+                mapView.removeAnnotation(view)
+                for photo in view.photos {
+                    sharedContext.deleteObject(photo)
+                }
+                sharedContext.deleteObject(view)
+                CoreDataStackManager.sharedInstance().saveContext()
+            }
         } else {
             if let view = view.annotation as? Pin {
                 selectedPin = view
