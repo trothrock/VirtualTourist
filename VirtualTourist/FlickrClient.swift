@@ -38,7 +38,7 @@ class FlickrClient: NSObject {
     // MARK: - Flickr API
     //--------------------------------------
     
-    func getImagesFromFlickrForPin(pin: Pin) {
+    func getImagesFromFlickrForPin(pin: Pin, completionHandler: (success: Bool, errorString: String?) -> Void) {
         let methodArguments = [
             "method": METHOD_NAME,
             "api_key": API_KEY,
@@ -60,17 +60,18 @@ class FlickrClient: NSObject {
         let task = session.dataTaskWithRequest(request) { (data, response, error) in
             
             guard error == nil else {
-                print("Error with request: \(error)")
+                completionHandler(success: false, errorString: error?.localizedDescription)
                 return
             }
             
             guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
                 if let response = response as? NSHTTPURLResponse {
-                    print("Request returned an invalid response. Status code: \(response.statusCode).")
+                    // TODO: Figure out completion handler behavior for error cases.
+                    completionHandler(success: false, errorString: "Request returned an invalid response. Status code: \(response.statusCode).")
                 } else if let response = response {
-                    print("Request returned an invalid response. Response: \(response).")
+                    completionHandler(success: false, errorString: "Request returned an invalid response. Response: \(response).")
                 } else {
-                    print("Request returned an invalid response.")
+                    completionHandler(success: false, errorString: "Request returned an invalid response")
                 }
                 return
             }
@@ -111,6 +112,7 @@ class FlickrClient: NSObject {
                         photoToAdd.pin = pin
                     }
                     CoreDataStackManager.sharedInstance().saveContext()
+                    completionHandler(success: true, errorString: nil)
                 }
             } else {
                 // TODO: Notify user that no photos are available for this pin.

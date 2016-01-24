@@ -9,13 +9,14 @@
 import UIKit
 import MapKit
 
-class PinDetailViewController: UIViewController {
+class PinDetailViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     
     //--------------------------------------
     // MARK: - Properties
     //--------------------------------------
     
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var collectionView: UICollectionView!
     
     var pin: Pin? = nil
     
@@ -28,8 +29,18 @@ class PinDetailViewController: UIViewController {
         
         setMapPin()
         setMapProperties()
+        collectionView.delegate = self
+        collectionView.dataSource = self
         if pin?.photos.count == 0 {
-            FlickrClient.sharedInstance().getImagesFromFlickrForPin(pin!)
+            FlickrClient.sharedInstance().getImagesFromFlickrForPin(pin!) { (success, errorString) in
+                if success {
+//                    self.collectionView.reloadData()
+                } else {
+                    print(errorString)
+                }
+            }
+        } else {
+//            self.collectionView.reloadData()
         }
     }
     
@@ -49,5 +60,25 @@ class PinDetailViewController: UIViewController {
         mapView.scrollEnabled = false
         mapView.pitchEnabled = false
         mapView.rotateEnabled = false
+    }
+    
+    //--------------------------------------
+    // MARK: - UICollectionView
+    //--------------------------------------
+    
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return pin!.photos.count
+    }
+    
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("imageCell", forIndexPath: indexPath) as! CustomCollectionViewCell
+        if let photoUrl = pin?.photos[indexPath.row].urlString {
+            print(photoUrl)
+        }
+        return cell
+    }
+    
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        
     }
 }
