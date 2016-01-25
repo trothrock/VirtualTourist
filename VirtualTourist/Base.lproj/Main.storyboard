@@ -3,7 +3,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
@@ -101,6 +100,7 @@
                             </mapView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Bh3-l3-z6K">
                                 <rect key="frame" x="0.0" y="214" width="600" height="386"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="7Gj-Yc-a6m">
                                     <size key="itemSize" width="120" height="120"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -115,19 +115,35 @@
                                             <rect key="frame" x="0.0" y="0.0" width="120" height="120"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
+                                                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pbr-to-8gd" userLabel="Default View">
+                                                    <rect key="frame" x="2" y="2" width="116" height="116"/>
+                                                    <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                </view>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="iPm-vc-V70">
-                                                    <rect key="frame" x="8" y="8" width="104" height="104"/>
+                                                    <rect key="frame" x="2" y="2" width="116" height="116"/>
                                                 </imageView>
+                                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="wpA-22-w4d">
+                                                    <rect key="frame" x="50" y="50" width="20" height="20"/>
+                                                </activityIndicatorView>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
-                                            <constraint firstItem="iPm-vc-V70" firstAttribute="top" secondItem="siB-vb-5UW" secondAttribute="topMargin" id="95M-ac-7BS"/>
-                                            <constraint firstItem="iPm-vc-V70" firstAttribute="leading" secondItem="siB-vb-5UW" secondAttribute="leadingMargin" id="9yG-xM-I4L"/>
-                                            <constraint firstAttribute="bottomMargin" secondItem="iPm-vc-V70" secondAttribute="bottom" id="CZB-cI-vS6"/>
-                                            <constraint firstAttribute="trailingMargin" secondItem="iPm-vc-V70" secondAttribute="trailing" id="Xbz-HN-x3w"/>
+                                            <constraint firstAttribute="bottom" secondItem="iPm-vc-V70" secondAttribute="bottom" constant="2" id="LFZ-ei-eif"/>
+                                            <constraint firstAttribute="trailing" secondItem="iPm-vc-V70" secondAttribute="trailing" constant="2" id="MoY-8q-3nR"/>
+                                            <constraint firstItem="wpA-22-w4d" firstAttribute="centerY" secondItem="siB-vb-5UW" secondAttribute="centerY" id="dUV-ci-7Vz"/>
+                                            <constraint firstItem="iPm-vc-V70" firstAttribute="leading" secondItem="siB-vb-5UW" secondAttribute="leading" constant="2" id="eaR-bs-eQj"/>
+                                            <constraint firstAttribute="bottom" secondItem="pbr-to-8gd" secondAttribute="bottom" constant="2" id="kYe-tN-K5V"/>
+                                            <constraint firstItem="pbr-to-8gd" firstAttribute="top" secondItem="siB-vb-5UW" secondAttribute="top" constant="2" id="l9g-Kq-F7J"/>
+                                            <constraint firstItem="iPm-vc-V70" firstAttribute="top" secondItem="siB-vb-5UW" secondAttribute="top" constant="2" id="uUo-H8-rfR"/>
+                                            <constraint firstItem="wpA-22-w4d" firstAttribute="centerX" secondItem="siB-vb-5UW" secondAttribute="centerX" id="wbg-mB-7n3"/>
+                                            <constraint firstItem="pbr-to-8gd" firstAttribute="leading" secondItem="siB-vb-5UW" secondAttribute="leading" constant="2" id="xJA-Dy-jd1"/>
+                                            <constraint firstAttribute="trailing" secondItem="pbr-to-8gd" secondAttribute="trailing" constant="2" id="za9-zo-0eL"/>
                                         </constraints>
                                         <connections>
+                                            <outlet property="activityIndicator" destination="wpA-22-w4d" id="JK2-YO-6tZ"/>
+                                            <outlet property="defaultView" destination="pbr-to-8gd" id="js9-EM-Uyd"/>
                                             <outlet property="imageView" destination="iPm-vc-V70" id="tIa-LS-SQr"/>
                                         </connections>
                                     </collectionViewCell>
@@ -136,6 +152,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="89l-2d-Q6k" firstAttribute="height" secondItem="VB1-Ey-8hx" secondAttribute="height" multiplier="0.4" id="7dh-Az-1AQ"/>
                             <constraint firstItem="89l-2d-Q6k" firstAttribute="height" secondItem="VB1-Ey-8hx" secondAttribute="height" multiplier="0.25" id="HZp-8O-J25"/>
                             <constraint firstItem="Bh3-l3-z6K" firstAttribute="leading" secondItem="VB1-Ey-8hx" secondAttribute="leading" id="QhH-gN-AWW"/>
                             <constraint firstItem="89l-2d-Q6k" firstAttribute="leading" secondItem="VB1-Ey-8hx" secondAttribute="leading" id="RFe-1X-F5r"/>
@@ -145,9 +162,21 @@
                             <constraint firstItem="s6h-3M-hNH" firstAttribute="top" secondItem="Bh3-l3-z6K" secondAttribute="bottom" id="jj6-Br-PIf"/>
                             <constraint firstAttribute="trailing" secondItem="Bh3-l3-z6K" secondAttribute="trailing" id="n0A-B6-vlP"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="7dh-Az-1AQ"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=compact">
+                            <mask key="constraints">
+                                <include reference="7dh-Az-1AQ"/>
+                                <exclude reference="HZp-8O-J25"/>
+                            </mask>
+                        </variation>
                     </view>
                     <connections>
                         <outlet property="collectionView" destination="Bh3-l3-z6K" id="Acm-TP-rkW"/>
+                        <outlet property="flowLayout" destination="7Gj-Yc-a6m" id="oJF-G4-UOp"/>
                         <outlet property="mapView" destination="89l-2d-Q6k" id="wOz-Kh-xez"/>
                     </connections>
                 </viewController>

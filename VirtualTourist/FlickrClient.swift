@@ -18,7 +18,7 @@ class FlickrClient: NSObject {
     let BASE_URL = "https://api.flickr.com/services/rest/"
     let METHOD_NAME = "flickr.photos.search"
     let API_KEY = "a655dfdf2cd37f0f64d5d0f22368062f"
-    let PER_PAGE = "20"
+    let PER_PAGE = "21"
     let EXTRAS = "url_m"
     let SAFE_SEARCH = "1"
     let DATA_FORMAT = "json"

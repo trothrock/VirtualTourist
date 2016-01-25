@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-class PinDetailViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+class PinDetailViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     //--------------------------------------
     // MARK: - Properties
@@ -17,6 +17,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
     
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     
     var pin: Pin? = nil
     
@@ -29,13 +30,22 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
         
         setMapPin()
         setMapProperties()
+        
         collectionView.delegate = self
         collectionView.dataSource = self
+        
+        flowLayout.minimumInteritemSpacing = 0.0
+        flowLayout.minimumLineSpacing = 0.0
+        
         if pin?.photos.count == 0 {
             FlickrClient.sharedInstance().getImagesFromFlickrForPin(pin!) { (success, errorString) in
                 if let errorString = errorString {
                     print(errorString)
                     // TODO: Handle error
+                } else {
+                    dispatch_async(dispatch_get_main_queue()) {
+                        self.collectionView.reloadData()
+                    }
                 }
             }
         }
@@ -70,7 +80,12 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("imageCell", forIndexPath: indexPath) as! CustomCollectionViewCell
+        
         cell.imageView.image = nil
+        cell.defaultView.hidden = false
+        cell.activityIndicator.hidesWhenStopped = true
+        cell.activityIndicator.startAnimating()
+        
         if let photo = pin?.photos[indexPath.row] {
             FlickrClient.sharedInstance().taskToRetrieveImageDataFromUrl(photo.urlString) { (data, errorString) in
                 if let errorString = errorString {
@@ -81,6 +96,8 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
                         let image = UIImage(data: data)
                         photo.image = image
                         dispatch_async(dispatch_get_main_queue()) {
+                            cell.activityIndicator.stopAnimating()
+                            cell.defaultView.hidden = true
                             cell.imageView!.image = photo.image
                         }
                     }
@@ -92,5 +109,18 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
+    }
+    
+    //--------------------------------------
+    // MARK: - Cell Sizing
+    //--------------------------------------
+    
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        let dimension = self.view.frame.size.width / 3.0
+        return CGSizeMake(dimension, dimension)
+    }
+    
+    override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
+        collectionView.collectionViewLayout.invalidateLayout()
     }
 }
