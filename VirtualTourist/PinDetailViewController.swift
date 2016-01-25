@@ -33,14 +33,11 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
         collectionView.dataSource = self
         if pin?.photos.count == 0 {
             FlickrClient.sharedInstance().getImagesFromFlickrForPin(pin!) { (success, errorString) in
-                if success {
-//                    self.collectionView.reloadData()
-                } else {
+                if let errorString = errorString {
                     print(errorString)
+                    // TODO: Handle error
                 }
             }
-        } else {
-//            self.collectionView.reloadData()
         }
     }
     
@@ -50,6 +47,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
     
     func setMapPin() {
         guard let pin = self.pin else {return}
+        
         let region = MKCoordinateRegionMake(pin.coordinate, MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5))
         mapView.region = region
         mapView.addAnnotation(pin)
@@ -72,8 +70,22 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("imageCell", forIndexPath: indexPath) as! CustomCollectionViewCell
-        if let photoUrl = pin?.photos[indexPath.row].urlString {
-            print(photoUrl)
+        cell.imageView.image = nil
+        if let photo = pin?.photos[indexPath.row] {
+            FlickrClient.sharedInstance().taskToRetrieveImageDataFromUrl(photo.urlString) { (data, errorString) in
+                if let errorString = errorString {
+                    print(errorString)
+                    // TODO: Handle error.
+                } else {
+                    if let data = data {
+                        let image = UIImage(data: data)
+                        photo.image = image
+                        dispatch_async(dispatch_get_main_queue()) {
+                            cell.imageView!.image = photo.image
+                        }
+                    }
+                }
+            }
         }
         return cell
     }

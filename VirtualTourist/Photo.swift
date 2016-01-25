@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import UIKit
 
 class Photo: NSManagedObject {
     
@@ -17,6 +18,7 @@ class Photo: NSManagedObject {
     
     @NSManaged var urlString: String
     @NSManaged var pin: Pin?
+    var image: UIImage?
     
     //--------------------------------------
     // MARK: - Init Methods

@@ -121,7 +121,6 @@
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
-                                        <color key="backgroundColor" red="1" green="0.24788983049999999" blue="0.28216536209999998" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstItem="iPm-vc-V70" firstAttribute="top" secondItem="siB-vb-5UW" secondAttribute="topMargin" id="95M-ac-7BS"/>
                                             <constraint firstItem="iPm-vc-V70" firstAttribute="leading" secondItem="siB-vb-5UW" secondAttribute="leadingMargin" id="9yG-xM-I4L"/>

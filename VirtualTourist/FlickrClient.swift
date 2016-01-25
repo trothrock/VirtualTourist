@@ -115,11 +115,24 @@ class FlickrClient: NSObject {
                     completionHandler(success: true, errorString: nil)
                 }
             } else {
-                // TODO: Notify user that no photos are available for this pin.
-                print("No photos available for this location.")
+                completionHandler(success: false, errorString: "No photos available for this location.")
             }
         }
         
+        task.resume()
+    }
+    
+    func taskToRetrieveImageDataFromUrl(urlString: String, completionHandler: (imageData: NSData?, errorString: String?) -> Void) {
+        let url = NSURL(string: urlString)!
+        let request = NSURLRequest(URL: url)
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request) { (data, response, error) in
+            if let error = error {
+                completionHandler(imageData: nil, errorString: error.localizedDescription)
+            } else {
+                completionHandler(imageData: data, errorString: nil)
+            }
+        }
         task.resume()
     }
     
