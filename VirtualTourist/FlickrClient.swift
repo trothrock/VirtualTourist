@@ -43,8 +43,7 @@ class FlickrClient: NSObject {
             "method": METHOD_NAME,
             "api_key": API_KEY,
             "per_page": PER_PAGE,
-            // TODO: "page" should be a property of Pin object. Incremented each time the user requests a new batch of pictures. Reset to 1 once greater than total page count.
-            "page": "1",
+            "page": String(pin.pageNumber),
             "bbox": createBoundingBoxStringForPin(pin),
             "safe_search": SAFE_SEARCH,
             "extras": EXTRAS,

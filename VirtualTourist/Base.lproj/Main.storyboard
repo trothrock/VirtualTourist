@@ -98,8 +98,8 @@
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="89l-2d-Q6k">
                                 <rect key="frame" x="0.0" y="64" width="600" height="150"/>
                             </mapView>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Bh3-l3-z6K">
-                                <rect key="frame" x="0.0" y="214" width="600" height="386"/>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Bh3-l3-z6K">
+                                <rect key="frame" x="0.0" y="214" width="600" height="346"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="7Gj-Yc-a6m">
                                     <size key="itemSize" width="120" height="120"/>
@@ -125,13 +125,21 @@
                                                 <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="wpA-22-w4d">
                                                     <rect key="frame" x="50" y="50" width="20" height="20"/>
                                                 </activityIndicatorView>
+                                                <view hidden="YES" alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BvP-40-91b" userLabel="Selected View">
+                                                    <rect key="frame" x="0.0" y="0.0" width="120" height="120"/>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                </view>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="BvP-40-91b" secondAttribute="trailing" id="1YK-mV-nVj"/>
+                                            <constraint firstAttribute="bottom" secondItem="BvP-40-91b" secondAttribute="bottom" id="JYd-dA-X0N"/>
+                                            <constraint firstItem="BvP-40-91b" firstAttribute="top" secondItem="siB-vb-5UW" secondAttribute="top" id="KIq-k1-hMe"/>
                                             <constraint firstAttribute="bottom" secondItem="iPm-vc-V70" secondAttribute="bottom" constant="2" id="LFZ-ei-eif"/>
                                             <constraint firstAttribute="trailing" secondItem="iPm-vc-V70" secondAttribute="trailing" constant="2" id="MoY-8q-3nR"/>
+                                            <constraint firstItem="BvP-40-91b" firstAttribute="leading" secondItem="siB-vb-5UW" secondAttribute="leading" id="dPM-37-YMP"/>
                                             <constraint firstItem="wpA-22-w4d" firstAttribute="centerY" secondItem="siB-vb-5UW" secondAttribute="centerY" id="dUV-ci-7Vz"/>
                                             <constraint firstItem="iPm-vc-V70" firstAttribute="leading" secondItem="siB-vb-5UW" secondAttribute="leading" constant="2" id="eaR-bs-eQj"/>
                                             <constraint firstAttribute="bottom" secondItem="pbr-to-8gd" secondAttribute="bottom" constant="2" id="kYe-tN-K5V"/>
@@ -145,21 +153,35 @@
                                             <outlet property="activityIndicator" destination="wpA-22-w4d" id="JK2-YO-6tZ"/>
                                             <outlet property="defaultView" destination="pbr-to-8gd" id="js9-EM-Uyd"/>
                                             <outlet property="imageView" destination="iPm-vc-V70" id="tIa-LS-SQr"/>
+                                            <outlet property="selectedview" destination="BvP-40-91b" id="Aac-1x-F3I"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PiP-1I-9Et">
+                                <rect key="frame" x="0.0" y="560" width="600" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="auJ-g5-wsF"/>
+                                </constraints>
+                                <state key="normal" title="New collection"/>
+                                <connections>
+                                    <action selector="bottomButtonTapped" destination="Aqd-av-z2Z" eventType="touchUpInside" id="0zF-Kp-NDX"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="PiP-1I-9Et" firstAttribute="centerX" secondItem="VB1-Ey-8hx" secondAttribute="centerX" id="3Zq-nV-98P"/>
                             <constraint firstItem="89l-2d-Q6k" firstAttribute="height" secondItem="VB1-Ey-8hx" secondAttribute="height" multiplier="0.4" id="7dh-Az-1AQ"/>
+                            <constraint firstItem="s6h-3M-hNH" firstAttribute="top" secondItem="PiP-1I-9Et" secondAttribute="bottom" id="B2I-QU-wGW"/>
+                            <constraint firstItem="PiP-1I-9Et" firstAttribute="width" secondItem="VB1-Ey-8hx" secondAttribute="width" id="E22-my-rry"/>
+                            <constraint firstItem="PiP-1I-9Et" firstAttribute="top" secondItem="Bh3-l3-z6K" secondAttribute="bottom" id="HOx-Vq-LVX"/>
                             <constraint firstItem="89l-2d-Q6k" firstAttribute="height" secondItem="VB1-Ey-8hx" secondAttribute="height" multiplier="0.25" id="HZp-8O-J25"/>
                             <constraint firstItem="Bh3-l3-z6K" firstAttribute="leading" secondItem="VB1-Ey-8hx" secondAttribute="leading" id="QhH-gN-AWW"/>
                             <constraint firstItem="89l-2d-Q6k" firstAttribute="leading" secondItem="VB1-Ey-8hx" secondAttribute="leading" id="RFe-1X-F5r"/>
                             <constraint firstItem="Bh3-l3-z6K" firstAttribute="top" secondItem="89l-2d-Q6k" secondAttribute="bottom" id="RUN-er-Ubx"/>
                             <constraint firstItem="89l-2d-Q6k" firstAttribute="top" secondItem="IR3-7p-0jv" secondAttribute="bottom" id="S8a-1k-2Xa"/>
                             <constraint firstAttribute="trailing" secondItem="89l-2d-Q6k" secondAttribute="trailing" id="cCL-dz-O29"/>
-                            <constraint firstItem="s6h-3M-hNH" firstAttribute="top" secondItem="Bh3-l3-z6K" secondAttribute="bottom" id="jj6-Br-PIf"/>
                             <constraint firstAttribute="trailing" secondItem="Bh3-l3-z6K" secondAttribute="trailing" id="n0A-B6-vlP"/>
                         </constraints>
                         <variation key="default">
@@ -175,6 +197,7 @@
                         </variation>
                     </view>
                     <connections>
+                        <outlet property="bottomButton" destination="PiP-1I-9Et" id="t8t-ay-RDu"/>
                         <outlet property="collectionView" destination="Bh3-l3-z6K" id="Acm-TP-rkW"/>
                         <outlet property="flowLayout" destination="7Gj-Yc-a6m" id="oJF-G4-UOp"/>
                         <outlet property="mapView" destination="89l-2d-Q6k" id="wOz-Kh-xez"/>

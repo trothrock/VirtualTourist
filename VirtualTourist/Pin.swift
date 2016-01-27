@@ -19,6 +19,7 @@ class Pin: NSManagedObject, MKAnnotation {
     @NSManaged var lat: Double
     @NSManaged var long: Double
     @NSManaged var photos: [Photo]
+    @NSManaged var pageNumber: Int
     var coordinate: CLLocationCoordinate2D {
         return CLLocationCoordinate2D(latitude: lat, longitude: long)
     }
@@ -36,5 +37,6 @@ class Pin: NSManagedObject, MKAnnotation {
         super.init(entity: entity, insertIntoManagedObjectContext: context)
         self.lat = lat
         self.long = long
+        self.pageNumber = 1
     }
 }
