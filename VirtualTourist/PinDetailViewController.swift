@@ -43,6 +43,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.allowsMultipleSelection = true
+        collectionView.scrollEnabled = false
         flowLayout.minimumInteritemSpacing = 0.0
         flowLayout.minimumLineSpacing = 0.0
         
@@ -133,6 +134,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("imageCell", forIndexPath: indexPath) as! CustomCollectionViewCell
         
         // Obscure selected cells with a white, translucent view.
@@ -192,6 +194,12 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
                                 cell.activityIndicator.stopAnimating()
                                 cell.defaultView.hidden = true
                                 cell.imageView!.image = photo.image
+                            }
+                            
+                            // Scroll is disabled until all visible cells have loaded photos.
+                            
+                            if indexPath.row + 1 == collectionView.visibleCells().count {
+                                collectionView.scrollEnabled = true
                             }
                         }
                     }
