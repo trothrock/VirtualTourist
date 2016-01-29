@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 class PinDetailViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
@@ -19,9 +20,13 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     @IBOutlet weak var bottomButton: UIButton!
+    @IBOutlet weak var noImagesLabel: UILabel!
     
     var pin: Pin? = nil
     var selectedCells = [NSIndexPath]()
+    var sharedContext: NSManagedObjectContext {
+        return CoreDataStackManager.sharedInstance().managedObjectContext
+    }
     
     //--------------------------------------
     // MARK: - Lifecycle
@@ -33,18 +38,20 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
         setMapPin()
         setMapProperties()
         
+        // Configure collectionView.
+        
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.allowsMultipleSelection = true
-        
         flowLayout.minimumInteritemSpacing = 0.0
         flowLayout.minimumLineSpacing = 0.0
         
+        // If this is a new pin, retrieve images from Flickr.
+        
         if pin?.photos.count == 0 {
-            FlickrClient.sharedInstance().getImagesFromFlickrForPin(pin!) { (success, errorString) in
+            FlickrClient.sharedInstance().getImagesFromFlickrForPin(pin!) { errorString in
                 if let errorString = errorString {
-                    print(errorString)
-                    // TODO: Handle error
+                    self.handleErrorForString(errorString)
                 } else {
                     dispatch_async(dispatch_get_main_queue()) {
                         self.collectionView.reloadData()
@@ -59,16 +66,25 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
     //--------------------------------------
     
     @IBAction func bottomButtonTapped() {
+        
+        // Multi-purpose button. If no cells are selected and a network connection is available, retrieve a new set of images from Flickr. If cells are selected, delete them.
+        
         if bottomButton.titleLabel!.text == "New collection" {
+            
+            guard FlickrClient.sharedInstance().connectedToNetwork() else {
+                bottomButton.enabled = false
+                showAlertController("No network connection", sender: bottomButton)
+                return
+            }
+            
             pin?.pageNumber += 1
             for photo in pin!.photos {
                 photo.pin = nil
             }
             
-            FlickrClient.sharedInstance().getImagesFromFlickrForPin(pin!) { (success, errorString) in
+            FlickrClient.sharedInstance().getImagesFromFlickrForPin(pin!) { errorString in
                 if let errorString = errorString {
-                    print(errorString)
-                    // TODO: Handle error
+                    self.handleErrorForString(errorString)
                 } else {
                     dispatch_async(dispatch_get_main_queue()) {
                         self.collectionView.reloadData()
@@ -91,6 +107,9 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
     //--------------------------------------
     
     func setMapPin() {
+        
+        // Sets the pin location and zoom level of the mapView.
+        
         guard let pin = self.pin else {return}
         
         let region = MKCoordinateRegionMake(pin.coordinate, MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5))
@@ -116,11 +135,15 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("imageCell", forIndexPath: indexPath) as! CustomCollectionViewCell
         
+        // Obscure selected cells with a white, translucent view.
+        
         if cell.selected {
             cell.selectedview.hidden = false
         } else {
             cell.selectedview.hidden = true
         }
+        
+        // Set the default cell configuration, a grey cell with a spinning activity indicator.
             
         cell.imageView.image = nil
         cell.defaultView.hidden = false
@@ -131,29 +154,64 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
             
             cell.photo = photo
             
-            FlickrClient.sharedInstance().taskToRetrieveImageDataFromUrl(photo.urlString) { (data, errorString) in
-                if let errorString = errorString {
-                    print(errorString)
-                    // TODO: Handle error.
-                } else {
-                    if let data = data {
-                        let image = UIImage(data: data)
-                        photo.image = image
+            if photo.image != nil {
+                
+                // The image for the cell is still available.
+                
+                dispatch_async(dispatch_get_main_queue()) {
+                    cell.activityIndicator.stopAnimating()
+                    cell.defaultView.hidden = true
+                    cell.imageView!.image = photo.image
+                }
+            } else if let imageData = photo.imageData {
+                
+                // The image has been downloaded in the past and the data saved.
+                
+                photo.image = UIImage(data: imageData)
+                dispatch_async(dispatch_get_main_queue()) {
+                    cell.activityIndicator.stopAnimating()
+                    cell.defaultView.hidden = true
+                    cell.imageView!.image = photo.image
+                }
+            } else {
+                
+                // No image or data exists for the cell. Download the image data from the photo's url.
+                
+                FlickrClient.sharedInstance().retrieveImageDataFromUrl(photo.urlString) { (data, errorString) in
+                    if errorString != nil {
+                        
+                        // Unable to download data. Cell will remain a grey box. This allows the user to view previously downloaded photos even if all of the photos for a pin were not downloaded and saved in the past.
+                        
                         dispatch_async(dispatch_get_main_queue()) {
                             cell.activityIndicator.stopAnimating()
-                            cell.defaultView.hidden = true
-                            cell.imageView!.image = photo.image
+                        }
+                    } else {
+                        if let data = data {
+                            photo.setPhotoImageWithData(data)
+                            dispatch_async(dispatch_get_main_queue()) {
+                                cell.activityIndicator.stopAnimating()
+                                cell.defaultView.hidden = true
+                                cell.imageView!.image = photo.image
+                            }
                         }
                     }
                 }
             }
+        } else {
+            
         }
         return cell
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         let cell = collectionView.cellForItemAtIndexPath(indexPath) as! CustomCollectionViewCell
+        
+        // Obscure selected cells with a white, translucent view.
+        
         cell.selectedview.hidden = false
+        
+        // Append all selected cells to an array and alter the title/function of the multi-purpose bottomButton.
+        
         selectedCells.append(indexPath)
         if bottomButton.titleLabel!.text == "New collection" {
             bottomButton.setTitle("Remove selected pictures", forState: UIControlState.Normal)
@@ -162,9 +220,17 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
     
     func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
         let cell = collectionView.cellForItemAtIndexPath(indexPath) as! CustomCollectionViewCell
+        
+        // Hide the white, translucent view.
+        
         cell.selectedview.hidden = true
+        
+        // Remove the cell from the selectedCell array.
+        
         let pathIndex = selectedCells.indexOf(indexPath)!
         selectedCells.removeAtIndex(pathIndex)
+        
+        // If this was the last selected cell, alter the title/function of the multi-purpose bottomButton.
         
         if selectedCells.count == 0 {
             bottomButton.setTitle("New collection", forState: UIControlState.Normal)
@@ -176,11 +242,61 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
     //--------------------------------------
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        
+        // Regardless of orientation, cells should be 1/3 the width of the screen.
+        
         let dimension = self.view.frame.size.width / 3.0
         return CGSizeMake(dimension, dimension)
     }
     
     override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
+        
+        // Invalidate collectionView layout before rotating so that cells will resize appropriately for the new orientation.
+        
         collectionView.collectionViewLayout.invalidateLayout()
+    }
+    
+    //--------------------------------------
+    // MARK: - Error Handling
+    //--------------------------------------
+    
+    func handleErrorForString(errorString: String) {
+        if errorString == "No photos" {
+            
+            // The pin location has no associated Flickr photos.
+            
+            dispatch_async(dispatch_get_main_queue()) {
+                self.noImagesLabel.hidden = false
+            }
+        } else {
+            showAlertController(errorString, sender: nil)
+        }
+    }
+    
+    func showAlertController(errorString: String, sender: UIButton?) {
+        
+        var alertTitle = String()
+        var alertMessage = String()
+        
+        switch errorString {
+            
+        case "No network connection":
+            alertTitle = "No network connection"
+            alertMessage = "You must be connected to the internet to access photos."
+            
+        default:
+            alertTitle = "Error"
+            alertMessage = errorString
+        }
+        
+        let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: UIAlertControllerStyle.Alert)
+        let okayAction = UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default) {
+            (action) in
+            if sender != self.bottomButton {
+                self.navigationController?.popViewControllerAnimated(true)
+            }
+        }
+        alert.addAction(okayAction)
+        self.presentViewController(alert, animated: true, completion: nil)
     }
 }

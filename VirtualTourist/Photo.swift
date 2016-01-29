@@ -18,6 +18,7 @@ class Photo: NSManagedObject {
     
     @NSManaged var urlString: String
     @NSManaged var pin: Pin?
+    @NSManaged var imageData: NSData?
     var image: UIImage?
     
     //--------------------------------------
@@ -32,5 +33,11 @@ class Photo: NSManagedObject {
         let entity = NSEntityDescription.entityForName("Photo", inManagedObjectContext: context)!
         super.init(entity: entity, insertIntoManagedObjectContext: context)
         self.urlString = urlString
+    }
+    
+    func setPhotoImageWithData(data: NSData) {
+        self.image = UIImage(data: data)
+        let pngData = UIImagePNGRepresentation(self.image!)
+        self.imageData = pngData!
     }
 }

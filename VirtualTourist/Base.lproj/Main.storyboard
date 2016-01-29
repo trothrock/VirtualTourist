@@ -95,9 +95,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="89l-2d-Q6k">
-                                <rect key="frame" x="0.0" y="64" width="600" height="150"/>
-                            </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PiP-1I-9Et">
+                                <rect key="frame" x="0.0" y="560" width="600" height="40"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="auJ-g5-wsF"/>
+                                </constraints>
+                                <state key="normal" title="New collection"/>
+                                <state key="disabled" title="New collection">
+                                    <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="bottomButtonTapped" destination="Aqd-av-z2Z" eventType="touchUpInside" id="0zF-Kp-NDX"/>
+                                </connections>
+                            </button>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Bh3-l3-z6K">
                                 <rect key="frame" x="0.0" y="214" width="600" height="346"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
@@ -158,19 +169,19 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PiP-1I-9Et">
-                                <rect key="frame" x="0.0" y="560" width="600" height="40"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="auJ-g5-wsF"/>
-                                </constraints>
-                                <state key="normal" title="New collection"/>
-                                <connections>
-                                    <action selector="bottomButtonTapped" destination="Aqd-av-z2Z" eventType="touchUpInside" id="0zF-Kp-NDX"/>
-                                </connections>
-                            </button>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="89l-2d-Q6k">
+                                <rect key="frame" x="0.0" y="64" width="600" height="150"/>
+                            </mapView>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This pin has no images." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J2D-Er-M8s">
+                                <rect key="frame" x="210" y="290" width="180" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="J2D-Er-M8s" firstAttribute="centerY" secondItem="VB1-Ey-8hx" secondAttribute="centerY" id="0ge-LH-Zgh"/>
                             <constraint firstItem="PiP-1I-9Et" firstAttribute="centerX" secondItem="VB1-Ey-8hx" secondAttribute="centerX" id="3Zq-nV-98P"/>
                             <constraint firstItem="89l-2d-Q6k" firstAttribute="height" secondItem="VB1-Ey-8hx" secondAttribute="height" multiplier="0.4" id="7dh-Az-1AQ"/>
                             <constraint firstItem="s6h-3M-hNH" firstAttribute="top" secondItem="PiP-1I-9Et" secondAttribute="bottom" id="B2I-QU-wGW"/>
@@ -183,6 +194,7 @@
                             <constraint firstItem="89l-2d-Q6k" firstAttribute="top" secondItem="IR3-7p-0jv" secondAttribute="bottom" id="S8a-1k-2Xa"/>
                             <constraint firstAttribute="trailing" secondItem="89l-2d-Q6k" secondAttribute="trailing" id="cCL-dz-O29"/>
                             <constraint firstAttribute="trailing" secondItem="Bh3-l3-z6K" secondAttribute="trailing" id="n0A-B6-vlP"/>
+                            <constraint firstItem="J2D-Er-M8s" firstAttribute="centerX" secondItem="VB1-Ey-8hx" secondAttribute="centerX" id="nek-MJ-5aD"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -201,6 +213,7 @@
                         <outlet property="collectionView" destination="Bh3-l3-z6K" id="Acm-TP-rkW"/>
                         <outlet property="flowLayout" destination="7Gj-Yc-a6m" id="oJF-G4-UOp"/>
                         <outlet property="mapView" destination="89l-2d-Q6k" id="wOz-Kh-xez"/>
+                        <outlet property="noImagesLabel" destination="J2D-Er-M8s" id="iGg-58-K4F"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7z8-7Q-zWZ" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -67,15 +67,21 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIScrollViewDelega
     //--------------------------------------
     
     @IBAction func longPress(sender: UILongPressGestureRecognizer) {
+        
+        // Pressing and holding a point on the map creates a new Pin object and adds it to the map.
+        
         guard sender.state == UIGestureRecognizerState.Began else {return}
         let touchPoint: CGPoint = sender.locationInView(mapView)
         let coordinate: CLLocationCoordinate2D = mapView.convertPoint(touchPoint, toCoordinateFromView: mapView)
         let newPin = Pin(lat: coordinate.latitude, long: coordinate.longitude, context: sharedContext)
         mapView.addAnnotation(newPin)
-        CoreDataStackManager.sharedInstance().saveContext()
+        CoreDataStackManager.sharedInstance().saveContext() {_ in}
     }
     
     @IBAction func editButtonPressed() {
+        
+        // Tapping the editButton scrolls the map up to reveal instructions. Tapping it again scrolls back.
+        
         if editingPins {
             editingPins = false
             editButton.title = "Edit"
@@ -124,7 +130,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIScrollViewDelega
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
         
-        // Delete pin if user is in editing mode. Otherwise, proceed to PinDetailViewController, passing the selected pin.
+        // If user is in editing mode, delete pin. Otherwise, proceed to PinDetailViewController, passing the selected pin.
     
         if editingPins {
             if let view = view.annotation as? Pin {
@@ -133,7 +139,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIScrollViewDelega
                     sharedContext.deleteObject(photo)
                 }
                 sharedContext.deleteObject(view)
-                CoreDataStackManager.sharedInstance().saveContext()
+                CoreDataStackManager.sharedInstance().saveContext() {_ in}
             }
         } else {
             if let view = view.annotation as? Pin {

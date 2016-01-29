@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import SystemConfiguration
 
 class FlickrClient: NSObject {
 
@@ -35,10 +36,41 @@ class FlickrClient: NSObject {
     }
     
     //--------------------------------------
+    // MARK: - Connectivity
+    //--------------------------------------
+    
+    func connectedToNetwork() -> Bool {
+        var zeroAddress = sockaddr_in()
+        zeroAddress.sin_len = UInt8(sizeofValue(zeroAddress))
+        zeroAddress.sin_family = sa_family_t(AF_INET)
+        
+        guard let defaultRouteReachability = withUnsafePointer(&zeroAddress, {
+            SCNetworkReachabilityCreateWithAddress(nil, UnsafePointer($0))
+        }) else {
+            return false
+        }
+        
+        var flags: SCNetworkReachabilityFlags = []
+        if !SCNetworkReachabilityGetFlags(defaultRouteReachability, &flags) {
+            return false
+        }
+        
+        let isReachable = flags.contains(.Reachable)
+        let needsConnection = flags.contains(.ConnectionRequired)
+        return (isReachable && !needsConnection)
+    }
+    
+    //--------------------------------------
     // MARK: - Flickr API
     //--------------------------------------
     
-    func getImagesFromFlickrForPin(pin: Pin, completionHandler: (success: Bool, errorString: String?) -> Void) {
+    func getImagesFromFlickrForPin(pin: Pin, completionHandler: (errorString: String?) -> Void) {
+        
+        guard connectedToNetwork() else {
+            completionHandler(errorString: "No network connection")
+            return
+        }
+        
         let methodArguments = [
             "method": METHOD_NAME,
             "api_key": API_KEY,
@@ -59,24 +91,21 @@ class FlickrClient: NSObject {
         let task = session.dataTaskWithRequest(request) { (data, response, error) in
             
             guard error == nil else {
-                completionHandler(success: false, errorString: error?.localizedDescription)
+                completionHandler(errorString: error?.localizedDescription)
                 return
             }
             
             guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
                 if let response = response as? NSHTTPURLResponse {
-                    // TODO: Figure out completion handler behavior for error cases.
-                    completionHandler(success: false, errorString: "Request returned an invalid response. Status code: \(response.statusCode).")
-                } else if let response = response {
-                    completionHandler(success: false, errorString: "Request returned an invalid response. Response: \(response).")
-                } else {
-                    completionHandler(success: false, errorString: "Request returned an invalid response")
+                    print("Error code \(response.statusCode)")
                 }
+                completionHandler(errorString: "Error")
                 return
             }
             
             guard let data = data else {
                 print("No data was returned by the request.")
+                completionHandler(errorString: "Error")
                 return
             }
             
@@ -86,20 +115,25 @@ class FlickrClient: NSObject {
             } catch {
                 parsedResult = nil
                 print("Unable to parse data as JSON: \(data)")
+                completionHandler(errorString: "Error")
+                return
             }
             
             guard let stat = parsedResult["stat"] as? String where stat == "ok" else {
                 print("Flickr API returned an error. See error code and message in \(parsedResult)")
+                completionHandler(errorString: "Error")
                 return
             }
             
             guard let photosDictionary = parsedResult["photos"] as? NSDictionary else {
                 print("Cannot find key 'photos' in \(parsedResult)")
+                completionHandler(errorString: "Error")
                 return
             }
             
             guard let totalPhotosVal = (photosDictionary["total"] as? NSString)?.integerValue else {
                 print("Cannot find key 'total' in \(photosDictionary)")
+                completionHandler(errorString: "Error")
                 return
             }
             
@@ -110,18 +144,22 @@ class FlickrClient: NSObject {
                         let photoToAdd = Photo(urlString: urlString, context: self.sharedContext)
                         photoToAdd.pin = pin
                     }
-                    CoreDataStackManager.sharedInstance().saveContext()
-                    completionHandler(success: true, errorString: nil)
+                    CoreDataStackManager.sharedInstance().saveContext() { error in
+                        if let _ = error {
+                            completionHandler(errorString: "Unable to save")
+                        }
+                    }
+                    completionHandler(errorString: nil)
                 }
             } else {
-                completionHandler(success: false, errorString: "No photos available for this location.")
+                completionHandler(errorString: "No photos")
             }
         }
         
         task.resume()
     }
     
-    func taskToRetrieveImageDataFromUrl(urlString: String, completionHandler: (imageData: NSData?, errorString: String?) -> Void) {
+    func retrieveImageDataFromUrl(urlString: String, completionHandler: (imageData: NSData?, errorString: String?) -> Void) {
         let url = NSURL(string: urlString)!
         let request = NSURLRequest(URL: url)
         let session = NSURLSession.sharedSession()
