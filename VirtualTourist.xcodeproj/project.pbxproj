@@ -163,9 +163,9 @@
 		FED7CF401C50AF5D00512D73 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				FED7CF081C509DC100512D73 /* AppDelegate.swift */,
 				FED7CF0A1C509DC100512D73 /* MapViewController.swift */,
 				FED7CF461C519FB100512D73 /* PinDetailViewController.swift */,
+				FED7CF081C509DC100512D73 /* AppDelegate.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";

@@ -78,6 +78,12 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
                 return
             }
             
+            // Disable ability to scroll until a new set of photos has been downloaded and displayed.
+            
+            collectionView.scrollEnabled = false
+            
+            // Increment the page number used in the Flickr API request and remove current photos from the pin.
+            
             pin?.pageNumber += 1
             for photo in pin!.photos {
                 photo.pin = nil
@@ -93,10 +99,16 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
                 }
             }
         } else {
+            
+            // Remove the selected cells from the pin.
+            
             for index in 0...selectedCells.count - 1 {
                 let cell = collectionView.cellForItemAtIndexPath(selectedCells[index]) as! CustomCollectionViewCell
                 cell.photo!.pin = nil
             }
+            
+            // Delete the selected cells, clear the selectedCells array, and alter the title/function of the bottomButton.
+            
             collectionView.deleteItemsAtIndexPaths(selectedCells)
             selectedCells.removeAll()
             bottomButton.setTitle("New collection", forState: UIControlState.Normal)
@@ -137,7 +149,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("imageCell", forIndexPath: indexPath) as! CustomCollectionViewCell
         
-        // Obscure selected cells with a white, translucent view.
+        // Appearance of selectedview is based on cell's "selected" status, not indexPath.
         
         if cell.selected {
             cell.selectedview.hidden = false
@@ -218,7 +230,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
         
         cell.selectedview.hidden = false
         
-        // Append all selected cells to an array and alter the title/function of the multi-purpose bottomButton.
+        // Append all selected cells to an array and alter the title/function of the bottomButton.
         
         selectedCells.append(indexPath)
         if bottomButton.titleLabel!.text == "New collection" {
@@ -238,7 +250,7 @@ class PinDetailViewController: UIViewController, UICollectionViewDataSource, UIC
         let pathIndex = selectedCells.indexOf(indexPath)!
         selectedCells.removeAtIndex(pathIndex)
         
-        // If this was the last selected cell, alter the title/function of the multi-purpose bottomButton.
+        // If this was the last selected cell, alter the title/function of the bottomButton.
         
         if selectedCells.count == 0 {
             bottomButton.setTitle("New collection", forState: UIControlState.Normal)

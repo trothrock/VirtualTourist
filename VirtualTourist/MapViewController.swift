@@ -38,6 +38,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIScrollViewDelega
         scrollView.delegate = self
         self.automaticallyAdjustsScrollViewInsets = false
         
+        // Change title of back button on navigation controller.
+        
+        let backButtonItem = UIBarButtonItem(title: "Back", style: .Plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = backButtonItem
+        
         addSavedPinsToMap()
     }
     
